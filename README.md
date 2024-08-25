@@ -51,10 +51,10 @@ Display the current fare as an integer on the fare meter (standard output).
 
 On the next lines, display all of the input data with mileage difference compared to previous data, and order it from highest to lowest
 
-00:02:00.125 1141.2 660.3
-00:03:00.100 1800.8 659.6
-00:01:00.123 480.9 480.9
-00:00:00.000 0.0 0.0
+- 00:02:00.125 1141.2 660.3
+- 00:03:00.100 1800.8 659.6
+- 00:01:00.123 480.9 480.9
+- 00:00:00.000 0.0 0.0
 
 Standard output displays nothing for incorrect inputs that do not meet specifications, the exit code ends with a value other than 0.
 
