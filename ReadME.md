@@ -92,7 +92,6 @@ This command will run all the tests in the project and provide a coverage report
     └── utils_test.go    # Unit tests for utils package
 ```
 
-```
 ### Key Points:
 
 - **Running the Application**: Instructions are provided for running the application both directly with Go and within a Docker container.
