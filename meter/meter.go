@@ -34,17 +34,19 @@ func (tm *TaxiMeter) ProcessRecords(input io.Reader) error {
 	for scanner.Scan() {
 		line := scanner.Text()
 		if line == "" {
-			return utils.LogError(errors.New("blank line detected"))
+			continue // Skip blank lines instead of returning an error
 		}
 
 		rec, err := record.ParseRecord(line)
 		if err != nil {
-			return utils.LogError(err)
+			utils.LogError(err) // Log the error but continue processing
+			continue
 		}
 
 		if len(tm.records) > 0 {
 			if err := tm.validateRecord(rec); err != nil {
-				return utils.LogError(err)
+				utils.LogError(err) // Log the error but continue processing
+				continue
 			}
 			rec.Diff = rec.Distance - tm.getLastRecord().Distance
 		} else {
@@ -69,12 +71,16 @@ func (tm *TaxiMeter) validateRecord(rec record.Record) error {
 		return errors.New("time interval greater than 5 minutes")
 	}
 
+	if rec.Distance < lastRecord.Distance {
+		return errors.New("distance cannot decrease")
+	}
+
 	return nil
 }
 
 func (tm *TaxiMeter) validateFinalRecords() error {
 	if len(tm.records) < 2 {
-		return errors.New("insufficient data")
+		return errors.New("insufficient data: less than two records")
 	}
 
 	if tm.getLastRecord().Distance == 0.0 {
@@ -96,8 +102,7 @@ func (tm *TaxiMeter) CalculateFare() float64 {
 		fare += calculateFareSegment(totalDistance-baseDistance, 400, farePer400m)
 	}
 
-	// Round the final fare to two decimal places
-	return math.Round(fare*100) / 100
+	return math.Round(fare*100) / 100 // Round the final fare to two decimal places
 }
 
 func calculateFareSegment(distance, unit, rate float64) float64 {
