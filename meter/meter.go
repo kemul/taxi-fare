@@ -3,7 +3,8 @@ package meter
 import (
 	"bufio"
 	"errors"
-	"os"
+	"io"
+	"math"
 	"sort"
 	"taxi-fare/record"
 	"taxi-fare/utils"
@@ -27,7 +28,7 @@ func NewTaxiMeter() *TaxiMeter {
 	return &TaxiMeter{}
 }
 
-func (tm *TaxiMeter) ProcessRecords(input *os.File) error {
+func (tm *TaxiMeter) ProcessRecords(input io.Reader) error {
 	scanner := bufio.NewScanner(input)
 
 	for scanner.Scan() {
@@ -95,11 +96,12 @@ func (tm *TaxiMeter) CalculateFare() float64 {
 		fare += calculateFareSegment(totalDistance-baseDistance, 400, farePer400m)
 	}
 
-	return fare
+	// Round the final fare to two decimal places
+	return math.Round(fare*100) / 100
 }
 
 func calculateFareSegment(distance, unit, rate float64) float64 {
-	return (distance / unit) * rate
+	return math.Round((distance/unit)*rate*100) / 100
 }
 
 func (tm *TaxiMeter) DisplaySortedRecords() {
