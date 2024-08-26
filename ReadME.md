@@ -109,12 +109,19 @@ PS E:\Workspace\taxi-fare> docker run --rm taxi-fare-app
 2024/08/26 14:34:28 Number of 400m units: 1.65
 2024/08/26 14:34:28 Additional fare: 65.96 yen (1.65 * 40.00)
 2024/08/26 14:34:28 Total fare after this step: 480 yen
-2024/08/26 14:34:28 (iv) Output =============================
-2024/08/26 14:34:28 480
-2024/08/26 14:34:28 00:02:00.125 1141.2 660.3
-2024/08/26 14:34:28 00:03:00.100 1800.8 659.6
-2024/08/26 14:34:28 00:01:00.123 480.9 480.9
-2024/08/26 14:34:28 00:00:00.000 0.0 0.0
+{"event":"fare_calculation","fare":480.08,"level":"info","msg":"Calculated fare successfully","time":"2024-08-26T15:02:31Z"}
+(iv) Output =============================
+480
+00:02:00.125 1141.2 660.3
+00:03:00.100 1800.8 659.6
+00:01:00.123 480.9 480.9
+00:00:00.000 0.0 0.0
+(iv) JSON Output =============================
+{"event":"output","fare":480,"level":"info","msg":"(iv) Output Json","time":"2024-08-26T15:02:31Z"}
+{"diff":660.3000000000001,"distance":1141.2,"fields.time":"00:02:00.125","level":"info","msg":"Processed record","time":"2024-08-26T15:02:31Z"}
+{"diff":659.5999999999999,"distance":1800.8,"fields.time":"00:03:00.100","level":"info","msg":"Processed record","time":"2024-08-26T15:02:31Z"}
+{"diff":480.9,"distance":480.9,"fields.time":"00:01:00.123","level":"info","msg":"Processed record","time":"2024-08-26T15:02:31Z"}
+{"diff":0,"distance":0,"fields.time":"00:00:00.000","level":"info","msg":"Processed record","time":"2024-08-26T15:02:31Z"}
 ```
 
 ## Testing
