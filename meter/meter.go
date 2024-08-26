@@ -2,123 +2,92 @@ package meter
 
 import (
 	"bufio"
-	"errors"
-	"io"
-	"math"
-	"sort"
+	"fmt"
+	"log"
+	"os"
 	"taxi-fare/record"
-	"taxi-fare/utils"
-	"time"
 )
 
 const (
-	baseFare        = 400.0
-	farePer400m     = 40.0
-	farePer350m     = 40.0
-	baseDistance    = 1000.0
-	midDistance     = 10000.0
-	maxTimeInterval = 5 * time.Minute
+	baseFare     = 400.0
+	farePer400m  = 40.0
+	baseDistance = 1000.0
 )
 
-type TaxiMeter struct {
-	records []record.Record
-}
+func ProcessInput(filePath string) ([]record.Record, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open input file: %v", err)
+	}
+	defer file.Close()
 
-func NewTaxiMeter() *TaxiMeter {
-	return &TaxiMeter{}
-}
-
-func (tm *TaxiMeter) ProcessRecords(input io.Reader) error {
-	scanner := bufio.NewScanner(input)
+	var records []record.Record
+	scanner := bufio.NewScanner(file)
+	var lastDistance float64
 
 	for scanner.Scan() {
 		line := scanner.Text()
 		if line == "" {
-			continue // Skip blank lines instead of returning an error
-		}
-
-		rec, err := record.ParseRecord(line)
-		if err != nil {
-			utils.LogError(err) // Log the error but continue processing
 			continue
 		}
 
-		if len(tm.records) > 0 {
-			if err := tm.validateRecord(rec); err != nil {
-				utils.LogError(err) // Log the error but continue processing
-				continue
-			}
-			rec.Diff = rec.Distance - tm.getLastRecord().Distance
-		} else {
-			rec.Diff = rec.Distance
+		record, err := record.ParseRecord(line)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing record: %v", err)
 		}
 
-		tm.records = append(tm.records, rec)
+		if len(records) > 0 {
+			record.Diff = record.Distance - lastDistance
+		} else {
+			record.Diff = record.Distance
+		}
+		lastDistance = record.Distance
+
+		records = append(records, record)
 	}
 
-	return tm.validateFinalRecords()
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("error reading input: %v", err)
+	}
+
+	return records, nil
 }
 
-func (tm *TaxiMeter) validateRecord(rec record.Record) error {
-	lastRecord := tm.getLastRecord()
-	timeDiff := rec.Time.Sub(lastRecord.Time)
-
-	if timeDiff < 0 {
-		return errors.New("past time detected")
-	}
-
-	if timeDiff > maxTimeInterval {
-		return errors.New("time interval greater than 5 minutes")
-	}
-
-	if rec.Distance < lastRecord.Distance {
-		return errors.New("distance cannot decrease")
-	}
-
-	return nil
-}
-
-func (tm *TaxiMeter) validateFinalRecords() error {
-	if len(tm.records) < 2 {
-		return errors.New("insufficient data: less than two records")
-	}
-
-	if tm.getLastRecord().Distance == 0.0 {
-		return errors.New("total distance is zero")
-	}
-
-	return nil
-}
-
-func (tm *TaxiMeter) CalculateFare() float64 {
-	totalDistance := tm.getLastRecord().Distance
+func CalculateFareIteratively(records []record.Record) float64 {
 	fare := baseFare
+	lastDistance := 0.0
 
-	switch {
-	case totalDistance > midDistance:
-		fare += calculateFareSegment(midDistance-baseDistance, 400, farePer400m)
-		fare += calculateFareSegment(totalDistance-midDistance, 350, farePer350m)
-	case totalDistance > baseDistance:
-		fare += calculateFareSegment(totalDistance-baseDistance, 400, farePer400m)
+	for i, record := range records {
+		log.Printf("=========================================================\n")
+		log.Printf("Processing line: %v", record) // Log each line as it is processed
+		if i == 0 {
+			log.Printf("Step %d: Initial fare: %d yen for up to 1 km.\n", i+1, int(fare))
+		} else {
+			log.Printf("Step %d: Current Distance: %.1f meters\n", i+1, record.Distance)
+			if record.Distance > baseDistance {
+				extraDistance := record.Distance - baseDistance
+
+				// Only consider the distance beyond the last recorded distance
+				if lastDistance > baseDistance {
+					extraDistance = record.Distance - lastDistance
+				}
+
+				// Calculate additional fare
+				numUnits := extraDistance / 400.0
+				additionalFare := numUnits * farePer400m
+				fare += additionalFare
+
+				log.Printf("Additional distance beyond 1 km: %.1f meters\n", extraDistance)
+				log.Printf("Number of 400m units: %.2f\n", numUnits)
+				log.Printf("Additional fare: %.2f yen (%.2f * %.2f)\n", additionalFare, numUnits, farePer400m)
+				log.Printf("Total fare after this step: %d yen\n", int(fare))
+			} else {
+				log.Printf("Still within the first 1 km, no additional fare. Fare remains: %d yen\n", int(fare))
+			}
+		}
+
+		lastDistance = record.Distance
 	}
 
-	return math.Round(fare*100) / 100 // Round the final fare to two decimal places
-}
-
-func calculateFareSegment(distance, unit, rate float64) float64 {
-	return math.Round((distance/unit)*rate*100) / 100
-}
-
-func (tm *TaxiMeter) DisplaySortedRecords() {
-	sort.Slice(tm.records, func(i, j int) bool {
-		return tm.records[i].Diff > tm.records[j].Diff
-	})
-
-	for _, rec := range tm.records {
-		rec.PrintRecord()
-	}
-}
-
-func (tm *TaxiMeter) getLastRecord() record.Record {
-	return tm.records[len(tm.records)-1]
+	return fare
 }
