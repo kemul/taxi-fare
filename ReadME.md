@@ -127,10 +127,10 @@ go test ./... -coverprofile=coverage
 Result Test Coverage 
 ```bash
 PS E:\Workspace\taxi-fare> go test ./... -coverprofile=coverage
-ok      taxi-fare       0.351s  coverage: 84.6% of statements
-ok      taxi-fare/meter 0.310s  coverage: 79.5% of statements
-ok      taxi-fare/record        0.298s  coverage: 100.0% of statements
-ok      taxi-fare/utils 0.307s  coverage: 100.0% of statements
+ok      taxi-fare       0.424s  coverage: 77.8% of statements
+ok      taxi-fare/meter 0.424s  coverage: 79.5% of statements
+ok      taxi-fare/record        0.413s  coverage: 100.0% of statements
+ok      taxi-fare/utils 0.413s  coverage: 100.0% of statements
 ```
 Preview Code Coverage with this file : https://github.com/kemul/taxi-fare/blob/main/coverage.html
 ![image](https://github.com/user-attachments/assets/459357f1-bab0-43ec-9fdb-fe4ac84addce)
