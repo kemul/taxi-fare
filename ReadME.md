@@ -128,6 +128,8 @@ ok      taxi-fare/record        0.298s  coverage: 100.0% of statements
 ok      taxi-fare/utils 0.307s  coverage: 100.0% of statements
 ```
 Preview Code Coverage with this file : https://github.com/kemul/taxi-fare/blob/main/coverage.html
+![image](https://github.com/user-attachments/assets/459357f1-bab0-43ec-9fdb-fe4ac84addce)
+
 
 ## Project Structure
 
