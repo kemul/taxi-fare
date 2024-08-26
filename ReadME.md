@@ -87,29 +87,34 @@ Before running this project, make sure you have the following installed:
 
 Output 
 ```
-PS E:\Workspace\taxi-fare> docker run --rm taxi-fare-app
-2024/08/26 12:58:46 =========================================================
-2024/08/26 12:58:46 Processing line: {0000-01-01 00:00:00 +0000 UTC 0 0}
-2024/08/26 12:58:46 Step 1: Initial fare: 400 yen for up to 1 km.
-2024/08/26 12:58:46 =========================================================
-2024/08/26 12:58:46 Processing line: {0000-01-01 00:01:00.123 +0000 UTC 480.9 480.9}
-2024/08/26 12:58:46 Step 2: Current Distance: 480.9 meters
-2024/08/26 12:58:46 Still within the first 1 km, no additional fare. Fare remains: 400 yen
-2024/08/26 12:58:46 =========================================================
-2024/08/26 12:58:46 Processing line: {0000-01-01 00:02:00.125 +0000 UTC 1141.2 660.3000000000001}
-2024/08/26 12:58:46 Step 3: Current Distance: 1141.2 meters
-2024/08/26 12:58:46 Additional distance beyond 1 km: 141.2 meters
-2024/08/26 12:58:46 Number of 400m units: 0.35
-2024/08/26 12:58:46 Additional fare: 14.12 yen (0.35 * 40.00)
-2024/08/26 12:58:46 Total fare after this step: 414 yen
-2024/08/26 12:58:46 =========================================================
-2024/08/26 12:58:46 Processing line: {0000-01-01 00:03:00.1 +0000 UTC 1800.8 659.5999999999999}
-2024/08/26 12:58:46 Step 4: Current Distance: 1800.8 meters
-2024/08/26 12:58:46 Additional distance beyond 1 km: 659.6 meters
-2024/08/26 12:58:46 Number of 400m units: 1.65
-2024/08/26 12:58:46 Additional fare: 65.96 yen (1.65 * 40.00)
-2024/08/26 12:58:46 Total fare after this step: 480 yen
-2024/08/26 12:58:46 Total Fare: 480 yen
+PS E:\Workspace\taxi-fare> docker run --rm taxi-fare-app  
+2024/08/26 14:34:28 Process Calculation ===============================================
+2024/08/26 14:34:28 Processing Input: {0000-01-01 00:00:00 +0000 UTC 0 0}
+2024/08/26 14:34:28 Step 1: Initial fare: 400 yen for up to 1 km.
+2024/08/26 14:34:28 Process Calculation ===============================================
+2024/08/26 14:34:28 Processing Input: {0000-01-01 00:01:00.123 +0000 UTC 480.9 480.9}
+2024/08/26 14:34:28 Step 2: Current Distance: 480.9 meters
+2024/08/26 14:34:28 Still within the first 1 km, no additional fare. Fare remains: 400 yen
+2024/08/26 14:34:28 Process Calculation ===============================================
+2024/08/26 14:34:28 Processing Input: {0000-01-01 00:02:00.125 +0000 UTC 1141.2 660.3000000000001}
+2024/08/26 14:34:28 Step 3: Current Distance: 1141.2 meters
+2024/08/26 14:34:28 Additional distance beyond 1 km: 141.2 meters
+2024/08/26 14:34:28 Number of 400m units: 0.35
+2024/08/26 14:34:28 Additional fare: 14.12 yen (0.35 * 40.00)
+2024/08/26 14:34:28 Total fare after this step: 414 yen
+2024/08/26 14:34:28 Process Calculation ===============================================
+2024/08/26 14:34:28 Processing Input: {0000-01-01 00:03:00.1 +0000 UTC 1800.8 659.5999999999999}
+2024/08/26 14:34:28 Step 4: Current Distance: 1800.8 meters
+2024/08/26 14:34:28 Additional distance beyond 1 km: 659.6 meters
+2024/08/26 14:34:28 Number of 400m units: 1.65
+2024/08/26 14:34:28 Additional fare: 65.96 yen (1.65 * 40.00)
+2024/08/26 14:34:28 Total fare after this step: 480 yen
+2024/08/26 14:34:28 (iv) Output =============================
+2024/08/26 14:34:28 480
+2024/08/26 14:34:28 00:02:00.125 1141.2 660.3
+2024/08/26 14:34:28 00:03:00.100 1800.8 659.6
+2024/08/26 14:34:28 00:01:00.123 480.9 480.9
+2024/08/26 14:34:28 00:00:00.000 0.0 0.0
 ```
 
 ### With Go

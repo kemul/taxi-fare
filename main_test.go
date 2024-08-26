@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
+	"taxi-fare/record"
 	"testing"
 )
 
@@ -29,7 +30,7 @@ func TestRun(t *testing.T) {
 	}
 
 	// Run the main function logic using the temporary input file
-	fare, err := Run(tmpfile.Name())
+	fare, records, err := Run(tmpfile.Name())
 	if err != nil {
 		t.Fatalf("Run returned an error: %v", err)
 	}
@@ -38,26 +39,35 @@ func TestRun(t *testing.T) {
 	expectedFare := fare
 
 	// Check if the fare matches the expected value
-	if fare != expectedFare {
+	if fare != fare {
 		t.Errorf("Expected fare to be %.1f, got %.1f", expectedFare, fare)
+	}
+
+	// Check if the records are processed correctly
+	expectedRecords := 4
+	if len(records) != expectedRecords {
+		t.Errorf("Expected %d records, got %d", expectedRecords, len(records))
 	}
 }
 
 func TestRun_FileOpenError(t *testing.T) {
 	// Simulate a scenario where the file does not exist
-	fare, err := Run("nonexistent_file.txt")
+	fare, records, err := Run("nonexistent_file.txt")
 	if err == nil {
 		t.Errorf("Expected error for nonexistent file, but got nil")
 	}
 	if fare != 0 {
 		t.Errorf("Expected fare to be 0, but got %.1f", fare)
 	}
+	if records != nil {
+		t.Errorf("Expected records to be nil for error case")
+	}
 }
 
 func TestMainLogic_Success(t *testing.T) {
 	originalRun := Run
-	Run = func(inputFilePath string) (float64, error) {
-		return 494.0, nil
+	Run = func(inputFilePath string) (float64, []record.Record, error) {
+		return 494.0, []record.Record{}, nil
 	}
 	defer func() { Run = originalRun }()
 
@@ -69,8 +79,8 @@ func TestMainLogic_Success(t *testing.T) {
 
 func TestMainLogic_Error(t *testing.T) {
 	originalRun := Run
-	Run = func(inputFilePath string) (float64, error) {
-		return 0, errors.New("mock error")
+	Run = func(inputFilePath string) (float64, []record.Record, error) {
+		return 0, nil, errors.New("mock error")
 	}
 	defer func() { Run = originalRun }()
 
