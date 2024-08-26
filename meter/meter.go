@@ -59,7 +59,7 @@ func CalculateFareIteratively(records []record.Record) float64 {
 
 	for i, record := range records {
 		log.Printf("=========================================================\n")
-		log.Printf("Processing line: %v", record) // Log each line as it is processed
+		log.Printf("Processing Input: %v", record) // Log each line as it is processed
 		if i == 0 {
 			log.Printf("Step %d: Initial fare: %d yen for up to 1 km.\n", i+1, int(fare))
 		} else {

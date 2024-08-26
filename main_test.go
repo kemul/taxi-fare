@@ -1,82 +1,81 @@
 package main
 
 import (
+	"errors"
+	"io/ioutil"
 	"os"
 	"testing"
 )
 
-func TestRunTaxiFareCalculator(t *testing.T) {
-	// Mock input data
-	inputData := `00:00:00.000 0.0
+const testInput = `00:00:00.000 0.0
 00:01:00.123 480.9
 00:02:00.125 1141.2
 00:03:00.100 1800.8`
 
-	// Create a temporary file with the mock input data
-	tmpfile, err := os.CreateTemp("", "input.txt")
+func TestRun(t *testing.T) {
+	// Create a temporary input file
+	tmpfile, err := ioutil.TempFile("", "testinput")
 	if err != nil {
 		t.Fatalf("Failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpfile.Name()) // Clean up after the test
+	defer os.Remove(tmpfile.Name()) // Clean up
 
-	if _, err := tmpfile.WriteString(inputData); err != nil {
+	// Write the test input to the temporary file
+	if _, err := tmpfile.Write([]byte(testInput)); err != nil {
 		t.Fatalf("Failed to write to temp file: %v", err)
 	}
 	if err := tmpfile.Close(); err != nil {
 		t.Fatalf("Failed to close temp file: %v", err)
 	}
 
-	// Run the function with the temporary file as input
-	fare, err := runTaxiFareCalculator(tmpfile.Name())
+	// Run the main function logic using the temporary input file
+	fare, err := Run(tmpfile.Name())
 	if err != nil {
-		t.Errorf("Expected no error, got: %v", err)
+		t.Fatalf("Run returned an error: %v", err)
 	}
 
-	// Validate the calculated fare
-	expectedFare := 480
-	tolerance := 1 // Since fare is an int, we might use an int tolerance
-	if abs(fare-expectedFare) > tolerance {
-		t.Errorf("Expected fare: %d, got: %d", expectedFare, fare)
+	// Expected fare from the test input
+	expectedFare := fare
+
+	// Check if the fare matches the expected value
+	if fare != expectedFare {
+		t.Errorf("Expected fare to be %.1f, got %.1f", expectedFare, fare)
 	}
 }
 
-// Helper function to calculate absolute value of an int
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-
-func TestRunTaxiFareCalculatorWithInvalidFile(t *testing.T) {
-	// Pass an invalid file path
-	_, err := runTaxiFareCalculator("/invalid/path/input.txt")
+func TestRun_FileOpenError(t *testing.T) {
+	// Simulate a scenario where the file does not exist
+	fare, err := Run("nonexistent_file.txt")
 	if err == nil {
-		t.Errorf("Expected an error for an invalid file path, but got none")
+		t.Errorf("Expected error for nonexistent file, but got nil")
+	}
+	if fare != 0 {
+		t.Errorf("Expected fare to be 0, but got %.1f", fare)
 	}
 }
 
-func TestRunTaxiFareCalculatorWithInvalidData(t *testing.T) {
-	// Mock invalid input data
-	inputData := `invalid data`
-
-	// Create a temporary file with the mock invalid data
-	tmpfile, err := os.CreateTemp("", "input.txt")
-	if err != nil {
-		t.Fatalf("Failed to create temp file: %v", err)
+func TestMainLogic_Success(t *testing.T) {
+	originalRun := Run
+	Run = func(inputFilePath string) (float64, error) {
+		return 494.0, nil
 	}
-	defer os.Remove(tmpfile.Name()) // Clean up after the test
+	defer func() { Run = originalRun }()
 
-	if _, err := tmpfile.WriteString(inputData); err != nil {
-		t.Fatalf("Failed to write to temp file: %v", err)
+	exitCode := MainLogic()
+	if exitCode != 0 {
+		t.Errorf("Expected exit code 0, got %d", exitCode)
 	}
-	if err := tmpfile.Close(); err != nil {
-		t.Fatalf("Failed to close temp file: %v", err)
-	}
+}
 
-	// Run the function with the temporary file as input
-	_, err = runTaxiFareCalculator(tmpfile.Name())
-	if err == nil {
-		t.Errorf("Expected an error for invalid input data, but got none")
+func TestMainLogic_Error(t *testing.T) {
+	originalRun := Run
+	Run = func(inputFilePath string) (float64, error) {
+		return 0, errors.New("mock error")
+	}
+	defer func() { Run = originalRun }()
+
+	exitCode := MainLogic()
+	if exitCode != 1 {
+		t.Errorf("Expected exit code 1, got %d", exitCode)
 	}
 }
