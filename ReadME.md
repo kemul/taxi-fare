@@ -117,25 +117,6 @@ PS E:\Workspace\taxi-fare> docker run --rm taxi-fare-app
 2024/08/26 14:34:28 00:00:00.000 0.0 0.0
 ```
 
-### With Go
-
-1. Prepare an input file (e.g., `input.txt`) with the following format:
-    ```
-    00:00:00.000 0.0
-    00:01:00.123 480.9
-    00:02:00.125 1141.2
-    00:03:00.100 1800.8
-    ```
-
-2. Run the application:
-    ```bash
-    go run main.go < input.txt
-    ```
-
-3. The application will output the calculated fare and the sorted records.
-
-
-
 ## Testing
 
 To run the unit tests for the project, use the following command:
@@ -151,6 +132,9 @@ ok      taxi-fare/meter 0.310s  coverage: 79.5% of statements
 ok      taxi-fare/record        0.298s  coverage: 100.0% of statements
 ok      taxi-fare/utils 0.307s  coverage: 100.0% of statements
 ```
+Preview Code Coverage with this file : https://github.com/kemul/taxi-fare/blob/main/coverage.html
+![image](https://github.com/user-attachments/assets/459357f1-bab0-43ec-9fdb-fe4ac84addce)
+
 
 ## Project Structure
 
