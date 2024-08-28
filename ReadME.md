@@ -59,7 +59,7 @@ Before running this project, make sure you have the following installed:
 
 ## Installation
 
-1. Clone the repository to your local machine:
+1. Clone the repository (or extract zip file) to your local machine 
     ```bash
     git clone https://github.com/kemul/taxi-fare.git
     cd taxi-fare
@@ -73,6 +73,7 @@ Before running this project, make sure you have the following installed:
 ## Running the Application
 ### With Docker
 
+In the root application 
 1. Build the Docker image:
     ```bash
     docker build -t taxi-fare-app .
@@ -80,12 +81,36 @@ Before running this project, make sure you have the following installed:
 
 2. Run the application inside the Docker container:
     ```bash
-    docker run --rm -v $(pwd)/input.txt:/root/input.txt taxi-fare-app
+    docker run --rm taxi-fare-app
     ```
 
 3. The application will output the calculated fare and the sorted records inside the container.
 
-Output 
+To add Docker Compose documentation to your README, you can include the following section:
+
+---
+
+### Or With Docker Compose
+
+You can build and run the application using Docker Compose. Follow these steps in the root:
+
+1. **Build and Run the Application**:
+   ```sh
+   docker-compose up --build
+   ```
+
+2. **Run in Detached Mode**:
+   ```sh
+   docker-compose up --build -d
+   ```
+
+3. **Stop and Remove Containers**:
+   ```sh
+   docker-compose down
+   ```
+
+
+### Output 
 ```
 PS E:\Workspace\taxi-fare> docker run --rm taxi-fare-app  
 2024/08/26 14:34:28 Process Calculation ===============================================
@@ -126,8 +151,12 @@ PS E:\Workspace\taxi-fare> docker run --rm taxi-fare-app
 
 ## Testing
 
-To run the unit tests for the project, use the following command:
+Input file exist in the root project, with name `input.txt`
+```
+├── input.txt                # Sample input file for testing
+```
 
+To run the unit tests for the project, use the following command:
 ```bash
 go test ./... -coverprofile=coverage
 ```
@@ -146,20 +175,23 @@ Preview Code Coverage with this file : https://github.com/kemul/taxi-fare/blob/m
 ## Project Structure
 
 ```
-├── Dockerfile           # Dockerfile to containerize the application
-├── README.md            # This README file
-├── go.mod               # Go module file
-├── go.sum               # Go module dependencies
-├── main.go              # Main entry point of the application
-├── meter                # Package for handling taxi meter logic
+├── Dockerfile               # Dockerfile to containerize the application
+├── README.md                # This README file
+├── go.mod                   # Go module file
+├── go.sum                   # Go module dependencies
+├── main.go                  # Main entry point of the application
+├── main_test.go             # Unit tests for the main entry point
+├── input.txt                # Sample input file for testing
+├── docker-compose.yml       # Docker Compose configuration file
+├── meter                    # Package for handling taxi meter logic
 │   ├── meter.go
-│   └── meter_test.go    # Unit tests for meter package
-├── record               # Package for handling record parsing and data structure
+│   └── meter_test.go        # Unit tests for the meter package
+├── record                   # Package for handling record parsing and data structure
 │   ├── record.go
-│   └── record_test.go   # Unit tests for record package
-└── utils                # Utility package for logging and other helper functions
-    ├── utils.go
-    └── utils_test.go    # Unit tests for utils package
+│   └── record_test.go       # Unit tests for the record package
+└── utils                    # Utility package for logging and other helper functions
+    ├── log.go               # Logging utility functions
+    └── log_test.go          # Unit tests for the logging utility
 ```
 
 ### Key Points:

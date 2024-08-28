@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  taxi-fare:
+    build: .
+    image: taxi-fare-app:latest
+    container_name: taxi-fare-container
+    volumes:
+      - ./input.txt:/root/input.txt
+    ports:
+      - "8080:8080"
+    environment:
+      - ENV_VAR_NAME=DEV
+    command: ["./taxi-fare"]

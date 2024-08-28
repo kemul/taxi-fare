@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"sort"
@@ -21,12 +22,30 @@ func init() {
 
 var Run = run // Assign the actual function to the variable
 
+func validateInput(input string) (string, error) {
+	if input == "" {
+		return "", errors.New("input file path cannot be empty")
+	}
+	return input, nil
+}
+
 func run(inputFilePath string) (float64, []record.Record, error) {
-	records, err := meter.ProcessInput(inputFilePath)
+	// Input validation
+	validatedPath, err := validateInput(inputFilePath)
+	if err != nil {
+		log.WithFields(logrus.Fields{
+			"event": "input_validation",
+			"path":  inputFilePath,
+			"error": err.Error(),
+		}).Error("Invalid input file path")
+		return 0, nil, err
+	}
+
+	records, err := meter.ProcessInput(validatedPath)
 	if err != nil {
 		log.WithFields(logrus.Fields{
 			"event": "file_processing",
-			"path":  inputFilePath,
+			"path":  validatedPath,
 			"error": err.Error(),
 		}).Error("Failed to process input file")
 		return 0, nil, err
