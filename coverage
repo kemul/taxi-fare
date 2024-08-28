@@ -1,5 +1,4 @@
 mode: set
-taxi-fare/utils/log.go:9.32,17.2 4 1
 taxi-fare/record/record.go:16.47,18.21 2 1
 taxi-fare/record/record.go:18.21,20.3 1 1
 taxi-fare/record/record.go:22.2,23.16 2 1
@@ -7,6 +6,7 @@ taxi-fare/record/record.go:23.16,25.3 1 1
 taxi-fare/record/record.go:27.2,28.16 2 1
 taxi-fare/record/record.go:28.16,30.3 1 1
 taxi-fare/record/record.go:32.2,32.58 1 1
+taxi-fare/utils/log.go:9.32,17.2 4 1
 taxi-fare/meter/meter.go:17.61,19.16 2 1
 taxi-fare/meter/meter.go:19.16,21.3 1 1
 taxi-fare/meter/meter.go:22.2,28.21 5 1

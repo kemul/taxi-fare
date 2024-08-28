@@ -11,7 +11,7 @@ This project is a taxi fare calculator implemented in Go. It processes records o
 - [Docker](#docker)
 - [Project Structure](#project-structure)
 
-## Fare Calculation
+## Requirement
 1. Given the input data
 ```text
 00:00:00.000 0.0
@@ -47,7 +47,27 @@ This project is a taxi fare calculator implemented in Go. It processes records o
     ```
 - Total Fare: 480 yen
 
+## Project Structure
 
+```
+├── Dockerfile               # Dockerfile to containerize the application
+├── README.md                # This README file
+├── go.mod                   # Go module file
+├── go.sum                   # Go module dependencies
+├── main.go                  # Main entry point of the application
+├── main_test.go             # Unit tests for the main entry point
+├── input.txt                # Sample input file for testing
+├── docker-compose.yml       # Docker Compose configuration file
+├── meter                    # Package for handling taxi meter logic
+│   ├── meter.go
+│   └── meter_test.go        # Unit tests for the meter package
+├── record                   # Package for handling record parsing and data structure
+│   ├── record.go
+│   └── record_test.go       # Unit tests for the record package
+└── utils                    # Utility package for logging and other helper functions
+    ├── log.go               # Logging utility functions
+    └── log_test.go          # Unit tests for the logging utility
+```
 
 
 ## Prerequisites
@@ -109,6 +129,20 @@ You can build and run the application using Docker Compose. Follow these steps i
    docker-compose down
    ```
 
+### Or With Go(lang) command
+
+1. Navigate to project directory 
+    ```
+    cd taxi-fare
+    ```
+2. Tidy Up Go Modules
+    ```
+    go mod tidy
+    ```
+3. Tidy Up Go Modules
+    ```
+    go run main.go
+    ```
 
 ### Output 
 ```
@@ -151,12 +185,12 @@ PS E:\Workspace\taxi-fare> docker run --rm taxi-fare-app
 
 ## Testing
 
-Input file exist in the root project, with name `input.txt`
+1. Input file exist in the root project, with file name `input.txt`
 ```
 ├── input.txt                # Sample input file for testing
 ```
 
-To run the unit tests for the project, use the following command:
+2. To run the unit tests for the project, use the following command:
 ```bash
 go test ./... -coverprofile=coverage
 ```
@@ -168,37 +202,9 @@ ok      taxi-fare/meter 0.424s  coverage: 79.5% of statements
 ok      taxi-fare/record        0.413s  coverage: 100.0% of statements
 ok      taxi-fare/utils 0.413s  coverage: 100.0% of statements
 ```
-Preview Code Coverage with this file : https://github.com/kemul/taxi-fare/blob/main/coverage.html
-![image](https://github.com/user-attachments/assets/459357f1-bab0-43ec-9fdb-fe4ac84addce)
-
-
-## Project Structure
-
+2. To Preview Code Coverage 
 ```
-├── Dockerfile               # Dockerfile to containerize the application
-├── README.md                # This README file
-├── go.mod                   # Go module file
-├── go.sum                   # Go module dependencies
-├── main.go                  # Main entry point of the application
-├── main_test.go             # Unit tests for the main entry point
-├── input.txt                # Sample input file for testing
-├── docker-compose.yml       # Docker Compose configuration file
-├── meter                    # Package for handling taxi meter logic
-│   ├── meter.go
-│   └── meter_test.go        # Unit tests for the meter package
-├── record                   # Package for handling record parsing and data structure
-│   ├── record.go
-│   └── record_test.go       # Unit tests for the record package
-└── utils                    # Utility package for logging and other helper functions
-    ├── log.go               # Logging utility functions
-    └── log_test.go          # Unit tests for the logging utility
+go tool cover -html=coverage
 ```
-
-### Key Points:
-
-- **Running the Application**: Instructions are provided for running the application both directly with Go and within a Docker container.
-- **Testing**: Instructions are given for running the unit tests to ensure the code behaves as expected.
-- **Project Structure**: The project structure is outlined, showing the organization of the codebase.
-- **Docker**: The Docker section provides an easy way to build and run the application in an isolated environment.
-
-This `README.md` provides clear instructions on how to set up, run, and test the application, making it easy for anyone to get started with your project.
+Example Output : https://github.com/kemul/taxi-fare/blob/main/coverage.html
+![alt text](image.png)
